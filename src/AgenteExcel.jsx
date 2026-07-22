@@ -30,7 +30,7 @@ const PLANILHA_SERVICES = [
     desc: "Score de saúde financeira (0–100), projeção de patrimônio em 12 meses, raio-X em radar e alertas de teto por categoria.",
     file: "/planilhas/01_diagnostico_financeiro_360.xlsx",
     tabs: "DASHBOARD · LANCAMENTOS · PROJECAO",
-    auto: "Score, projeção composta, radar, doughnut e alertas",
+    auto: "Score, cascata do mês, sparklines, radar e doughnut",
   },
   {
     id: "fluxo-caixa",
@@ -39,7 +39,7 @@ const PLANILHA_SERVICES = [
     desc: "Alterna cenários pessimista/realista/otimista, calcula runway em dias e antecipa o ponto de ruptura do caixa.",
     file: "/planilhas/02_simulador_fluxo_caixa_90d.xlsx",
     tabs: "DASHBOARD · MOVIMENTOS",
-    auto: "Cenários dinâmicos, runway, curva e alerta de ruptura",
+    auto: "Cenários, cascata 90d, sparklines, runway e ruptura",
   },
   {
     id: "metas-habitos",
@@ -48,7 +48,7 @@ const PLANILHA_SERVICES = [
     desc: "Previsão de atingimento de cada objetivo pelo ritmo atual, burn-up de OKRs e consistência de hábitos em radar.",
     file: "/planilhas/03_painel_okr_habitos.xlsx",
     tabs: "DASHBOARD · OKRS · HABITOS",
-    auto: "Previsão por ritmo, semáforo e radar de consistência",
+    auto: "Previsão, cascata de gap, sparklines e radar",
   },
   {
     id: "cobrancas",
@@ -57,7 +57,7 @@ const PLANILHA_SERVICES = [
     desc: "Calcula DSO, distribui a carteira em faixas de aging, estima a recuperação ponderada por risco e sugere a ação de cobrança.",
     file: "/planilhas/04_regua_cobranca_inteligente.xlsx",
     tabs: "DASHBOARD · CONTAS",
-    auto: "DSO, aging, recuperação esperada e ação sugerida",
+    auto: "DSO, cascata da carteira, aging spark e ação",
   },
   {
     id: "precificacao",
@@ -66,7 +66,7 @@ const PLANILHA_SERVICES = [
     desc: "Valor da hora, ponto de equilíbrio com gráfico receita×custo, margem de contribuição e 3 cenários de proposta.",
     file: "/planilhas/05_motor_precificacao.xlsx",
     tabs: "DASHBOARD · ENTRADAS · PONTO_EQUILIBRIO",
-    auto: "Break-even, margem de contribuição e cenários",
+    auto: "Break-even, cascata custo→preço e spark de margem",
   },
   {
     id: "tarefas-kanban",
@@ -75,7 +75,7 @@ const PLANILHA_SERVICES = [
     desc: "Throughput, cycle time médio, controle de WIP, burndown da semana e alertas de tarefas envelhecidas.",
     file: "/planilhas/06_cockpit_produtividade.xlsx",
     tabs: "DASHBOARD · TAREFAS · BURNDOWN",
-    auto: "Throughput, cycle time, WIP e burndown",
+    auto: "Cascata de fluxo, WIP, cycle time e burndown spark",
   },
   {
     id: "relatorio-automatico",
@@ -84,7 +84,7 @@ const PLANILHA_SERVICES = [
     desc: "MRR, crescimento mês a mês, churn, CAC, LTV e LTV/CAC com leitura executiva escrita automaticamente.",
     file: "/planilhas/07_bi_executivo_negocio.xlsx",
     tabs: "DASHBOARD · DADOS_MENSAIS",
-    auto: "MRR, churn, CAC, LTV/CAC e narrativa automática",
+    auto: "MRR bridge (cascata), sparklines, CAC/LTV e narrativa",
   },
 ];
 
