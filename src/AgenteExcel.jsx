@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import * as XLSX from "xlsx";
+import { generatePlanilha } from "./planilhaGenerator.js";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
@@ -27,19 +28,26 @@ const PLANILHA_SERVICES = [
     id: "financeiro-pessoal",
     nome: "Controle Financeiro Pessoal",
     tag: "PLANILHA 1",
-    desc: "Entradas, saídas e saldo do mês com painel e gráfico por categoria.",
+    desc: "Entradas, saídas e saldo do mês com dashboard, ranking e barras.",
     file: "/planilhas/01_controle_financeiro_pessoal.xlsx",
-    tabs: "PAINEL · LANCAMENTOS · CATEGORIAS",
-    auto: "Listas suspensas, totais do mês, gasto por categoria",
+    tabs: "DASHBOARD · LANCAMENTOS · CATEGORIAS",
+    auto: "KPIs, ranking, barras e gráfico de rosca",
+    fields: [
+      { key: "nome", label: "Seu nome", type: "text", placeholder: "Flávio" },
+      { key: "renda", label: "Renda mensal base", type: "number", placeholder: "9200" },
+    ],
   },
   {
     id: "fluxo-caixa",
     nome: "Fluxo de Caixa Simples",
     tag: "PLANILHA 2",
-    desc: "Saldo hoje + projeção de 30 dias com realizados e previstos.",
+    desc: "Saldo hoje + projeção 30 dias com curva e alerta.",
     file: "/planilhas/02_fluxo_de_caixa_simples.xlsx",
-    tabs: "RESUMO · MOVIMENTOS",
-    auto: "Saldo acumulado, projeção 30 dias, alerta de caixa",
+    tabs: "DASHBOARD · MOVIMENTOS",
+    auto: "Saldo, projeção 30 dias, alerta e curva",
+    fields: [
+      { key: "saldoInicial", label: "Saldo inicial (R$)", type: "number", placeholder: "15000" },
+    ],
   },
   {
     id: "metas-habitos",
@@ -47,17 +55,19 @@ const PLANILHA_SERVICES = [
     tag: "PLANILHA 3",
     desc: "Progresso de metas e consistência semanal de hábitos.",
     file: "/planilhas/03_metas_e_habitos.xlsx",
-    tabs: "PAINEL · METAS · HABITOS",
-    auto: "% progresso, barra visual, heatmap de hábitos",
+    tabs: "DASHBOARD · METAS · HABITOS",
+    auto: "% progresso, barras e consistência",
+    fields: [],
   },
   {
     id: "cobrancas",
     nome: "Controle de Cobranças",
     tag: "PLANILHA 4",
-    desc: "Semáforo de atraso, dias vencidos e fila de cobrança.",
+    desc: "Semáforo de atraso, dias vencidos e fila prioritária.",
     file: "/planilhas/04_controle_de_cobrancas.xlsx",
-    tabs: "RESUMO · COBRANCAS",
-    auto: "Status automático, dias de atraso, ação sugerida",
+    tabs: "DASHBOARD · COBRANCAS",
+    auto: "Semáforo, atraso e prioridade",
+    fields: [],
   },
   {
     id: "precificacao",
@@ -65,26 +75,34 @@ const PLANILHA_SERVICES = [
     tag: "PLANILHA 5",
     desc: "Valor da hora e cenários mínimo, ideal e premium.",
     file: "/planilhas/05_precificacao.xlsx",
-    tabs: "PRECO · MEU_TEMPO",
-    auto: "Custo da entrega, margens e horas para preço-alvo",
+    tabs: "DASHBOARD · MEU_TEMPO",
+    auto: "Valor/hora e cenários min/ideal/premium",
+    fields: [
+      { key: "servico", label: "Nome do serviço", type: "text", placeholder: "Consultoria" },
+      { key: "renda", label: "Renda desejada/mês", type: "number", placeholder: "20000" },
+      { key: "horasProjeto", label: "Horas do projeto", type: "number", placeholder: "24" },
+      { key: "precoAlvo", label: "Preço-alvo do cliente", type: "number", placeholder: "8500" },
+    ],
   },
   {
     id: "tarefas-kanban",
     nome: "Gestão de Tarefas (Kanban)",
     tag: "PLANILHA 6",
-    desc: "A fazer, fazendo e feito com alerta de atraso.",
+    desc: "A fazer, fazendo e feito com WIP e atraso.",
     file: "/planilhas/06_gestao_de_tarefas_kanban.xlsx",
-    tabs: "RESUMO · TAREFAS",
-    auto: "Alertas, contadores kanban e limite WIP",
+    tabs: "DASHBOARD · TAREFAS",
+    auto: "WIP, atrasos e distribuição visual",
+    fields: [],
   },
   {
     id: "relatorio-automatico",
     nome: "Relatório que se Monta Sozinho",
     tag: "PLANILHA 7",
-    desc: "Resumo semanal automático com texto pronto para copiar.",
+    desc: "Resumo semanal com texto pronto para copiar.",
     file: "/planilhas/07_relatorio_que_se_monta_sozinho.xlsx",
-    tabs: "RESUMO · DADOS",
-    auto: "Totais da semana, variação e destaque automático",
+    tabs: "DASHBOARD · DADOS",
+    auto: "Comparativo semanal e texto pronto",
+    fields: [],
   },
 ];
 
@@ -477,6 +495,9 @@ export default function AgenteExcel() {
   const [sugestao, setSugestao] = useState(null);
   const [loading, setLoading] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
+  const [genService, setGenService] = useState(PLANILHA_SERVICES[0].id);
+  const [genForm, setGenForm] = useState({});
+  const [genMsg, setGenMsg] = useState("");
   const [erro, setErro] = useState("");
   const [res, setRes] = useState(null);
 
@@ -498,6 +519,24 @@ export default function AgenteExcel() {
       return "Chave DeepSeek inválida ou ausente. Coloque DEEPSEEK_API_KEY no arquivo .env e reinicie o servidor.";
     }
     return msg || "O agente não conseguiu processar. Tente com menos linhas ou verifique se os dados têm cabeçalho na primeira linha.";
+  }
+
+
+  function handleGeneratePlanilha() {
+    try {
+      setGenMsg("");
+      const svc = PLANILHA_SERVICES.find((s) => s.id === genService) || PLANILHA_SERVICES[0];
+      const opts = {};
+      (svc.fields || []).forEach((f) => {
+        const raw = genForm[f.key];
+        if (raw === undefined || raw === "") return;
+        opts[f.key] = f.type === "number" ? Number(raw) : raw;
+      });
+      generatePlanilha(svc.id, opts);
+      setGenMsg(`Planilha gerada: ${svc.nome}`);
+    } catch (e) {
+      setGenMsg(e?.message || "Falha ao gerar planilha");
+    }
   }
 
   async function rodarModo(modeAlvo, { forcarObjetivo } = {}) {
@@ -613,6 +652,7 @@ export default function AgenteExcel() {
 
       <main className="max-w-5xl mx-auto px-4 pb-16 space-y-6">
         
+        
         {/* 0 · 7 planilhas prontas e automatizadas */}
         <section className="rounded-2xl p-4 md:p-5 border" style={{ background: C.surface, borderColor: C.line }}>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
@@ -620,7 +660,7 @@ export default function AgenteExcel() {
               <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: C.muted }}>0 · Serviços automatizados</div>
               <h2 className="text-lg font-semibold" style={{ color: C.cream }}>7 planilhas prontas da Trust Excel</h2>
               <p className="text-sm mt-1" style={{ color: C.muted }}>
-                Baixe, preencha e deixe as fórmulas trabalharem. Cada arquivo já vem com painel, validações e automações.
+                Dashboards visuais + gerador sob demanda. Baixe o modelo pronto ou personalize e gere na hora.
               </p>
             </div>
             <a
@@ -633,9 +673,10 @@ export default function AgenteExcel() {
               Ver no hub TrustCorp
             </a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
             {PLANILHA_SERVICES.map((s) => (
-              <article key={s.id} className="rounded-xl p-3 border flex flex-col gap-2" style={{ background: C.surface2, borderColor: C.line }}>
+              <article key={s.id} className="rounded-xl p-3 border flex flex-col gap-2" style={{ background: C.surface2, borderColor: genService === s.id ? C.orange : C.line }}>
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[10px] tracking-[0.16em] uppercase" style={{ color: C.orange }}>{s.tag}</span>
                   <span className="text-[10px]" style={{ color: C.muted }}>{s.tabs}</span>
@@ -643,23 +684,101 @@ export default function AgenteExcel() {
                 <h3 className="text-sm font-semibold" style={{ color: C.cream }}>{s.nome}</h3>
                 <p className="text-xs leading-relaxed" style={{ color: C.muted }}>{s.desc}</p>
                 <p className="text-[11px]" style={{ color: C.greenBright }}>Automação: {s.auto}</p>
-                <div className="mt-auto pt-1">
+                <div className="mt-auto pt-1 flex flex-wrap gap-2">
                   <a
                     href={s.file}
                     download
                     className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold"
                     style={{ background: C.orange, color: C.bg }}
                   >
-                    Baixar planilha
+                    Baixar modelo
                   </a>
+                  <button
+                    type="button"
+                    onClick={() => { setGenService(s.id); setGenMsg(""); }}
+                    className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold border"
+                    style={{ borderColor: C.line, color: C.cream, background: C.surface }}
+                  >
+                    Personalizar
+                  </button>
                 </div>
               </article>
             ))}
           </div>
+
+          {/* Gerador sob demanda */}
+          <div className="rounded-xl p-4 border" style={{ background: C.surface2, borderColor: C.line }}>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
+              <div>
+                <div className="text-[11px] tracking-[0.16em] uppercase" style={{ color: C.orange }}>Gerador automático</div>
+                <h3 className="text-sm font-semibold" style={{ color: C.cream }}>Monte e baixe a planilha sob demanda</h3>
+              </div>
+              <select
+                value={genService}
+                onChange={(e) => { setGenService(e.target.value); setGenMsg(""); }}
+                className="rounded-lg px-3 py-2 text-xs border bg-transparent"
+                style={{ borderColor: C.line, color: C.cream }}
+              >
+                {PLANILHA_SERVICES.map((s) => (
+                  <option key={s.id} value={s.id} style={{ color: "#111", background: "#fff" }}>{s.nome}</option>
+                ))}
+              </select>
+            </div>
+
+            {(() => {
+              const svc = PLANILHA_SERVICES.find((s) => s.id === genService) || PLANILHA_SERVICES[0];
+              const fields = svc.fields || [];
+              return (
+                <div className="space-y-3">
+                  {fields.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {fields.map((f) => (
+                        <label key={f.key} className="block text-xs" style={{ color: C.muted }}>
+                          <span className="mb-1 block">{f.label}</span>
+                          <input
+                            type={f.type || "text"}
+                            placeholder={f.placeholder || ""}
+                            value={genForm[f.key] ?? ""}
+                            onChange={(e) => setGenForm((prev) => ({ ...prev, [f.key]: e.target.value }))}
+                            className="w-full rounded-lg px-3 py-2 text-sm border bg-transparent"
+                            style={{ borderColor: C.line, color: C.cream }}
+                          />
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-xs" style={{ color: C.muted }}>
+                      Esta planilha já vem com dados de exemplo prontos. Clique em gerar para baixar personalizada no navegador.
+                    </p>
+                  )}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleGeneratePlanilha}
+                      className="rounded-lg px-4 py-2 text-xs font-semibold"
+                      style={{ background: C.green, color: "#04140C" }}
+                    >
+                      Gerar e baixar agora
+                    </button>
+                    <a
+                      href={svc.file}
+                      download
+                      className="rounded-lg px-4 py-2 text-xs font-semibold border"
+                      style={{ borderColor: C.line, color: C.cream }}
+                    >
+                      Só o modelo visual (v2)
+                    </a>
+                    {genMsg && (
+                      <span className="text-xs" style={{ color: C.greenBright }}>{genMsg}</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
         </section>
 
-{/* modos */}
-        <section>
+<section>
           <div className="text-xs uppercase tracking-widest font-bold mb-3" style={{ color: C.muted }}>1 · Os 8 modos</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {MODES.map((m) => {

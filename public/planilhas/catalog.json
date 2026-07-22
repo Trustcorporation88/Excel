@@ -3,114 +3,49 @@
     "id": "financeiro-pessoal",
     "name": "Controle Financeiro Pessoal",
     "file": "01_controle_financeiro_pessoal.xlsx",
-    "problem": "Saber para onde o dinheiro vai sem app e sem mensalidade.",
-    "tabs": [
-      "PAINEL",
-      "LANCAMENTOS",
-      "CATEGORIAS"
-    ],
-    "automation": [
-      "Listas suspensas",
-      "Totais do mês",
-      "Gasto por categoria",
-      "Gráfico de rosca"
-    ]
+    "tabs": "DASHBOARD/PAINEL · LANCAMENTOS · CATEGORIAS",
+    "auto": "KPIs, ranking, barras e gráfico de rosca"
   },
   {
     "id": "fluxo-caixa",
     "name": "Fluxo de Caixa Simples",
     "file": "02_fluxo_de_caixa_simples.xlsx",
-    "problem": "Vai ter dinheiro no caixa daqui a 30 dias?",
-    "tabs": [
-      "RESUMO",
-      "MOVIMENTOS"
-    ],
-    "automation": [
-      "Saldo acumulado",
-      "Saldo hoje",
-      "Projeção 30 dias",
-      "Gráfico de linha"
-    ]
+    "tabs": "DASHBOARD · MOVIMENTOS",
+    "auto": "Saldo, projeção 30 dias, alerta e curva"
   },
   {
     "id": "metas-habitos",
     "name": "Metas e Hábitos do Ano",
     "file": "03_metas_e_habitos.xlsx",
-    "problem": "Transformar meta vaga em progresso mensurável.",
-    "tabs": [
-      "PAINEL",
-      "METAS",
-      "HABITOS"
-    ],
-    "automation": [
-      "% progresso",
-      "Barra visual",
-      "Consistência semanal",
-      "Heatmap de hábitos"
-    ]
+    "tabs": "DASHBOARD · METAS · HABITOS",
+    "auto": "% progresso, barras e consistência"
   },
   {
     "id": "cobrancas",
     "name": "Controle de Cobranças",
     "file": "04_controle_de_cobrancas.xlsx",
-    "problem": "Nunca mais esquecer de cobrar nem descobrir atraso tarde.",
-    "tabs": [
-      "RESUMO",
-      "COBRANCAS"
-    ],
-    "automation": [
-      "Status semáforo",
-      "Dias de atraso",
-      "Total atrasado",
-      "Ação sugerida"
-    ]
+    "tabs": "DASHBOARD · COBRANCAS",
+    "auto": "Semáforo, atraso e prioridade"
   },
   {
     "id": "precificacao",
     "name": "Precificação",
     "file": "05_precificacao.xlsx",
-    "problem": "Precificar com base em hora real e margem saudável.",
-    "tabs": [
-      "PRECO",
-      "MEU_TEMPO"
-    ],
-    "automation": [
-      "Valor da hora",
-      "Custo da entrega",
-      "Cenários min/ideal/premium",
-      "Horas para preço-alvo"
-    ]
+    "tabs": "DASHBOARD · MEU_TEMPO",
+    "auto": "Valor/hora e cenários min/ideal/premium"
   },
   {
     "id": "tarefas-kanban",
     "name": "Gestão de Tarefas (Kanban)",
     "file": "06_gestao_de_tarefas_kanban.xlsx",
-    "problem": "Uma visão só: a fazer, fazendo, feito.",
-    "tabs": [
-      "RESUMO",
-      "TAREFAS"
-    ],
-    "automation": [
-      "Alertas de atraso",
-      "Contadores kanban",
-      "WIP limit",
-      "Feitas na semana"
-    ]
+    "tabs": "DASHBOARD · TAREFAS",
+    "auto": "WIP, atrasos e distribuição visual"
   },
   {
     "id": "relatorio-automatico",
     "name": "Relatório que se Monta Sozinho",
     "file": "07_relatorio_que_se_monta_sozinho.xlsx",
-    "problem": "Acabar com a sexta perdida montando resumo manual.",
-    "tabs": [
-      "RESUMO",
-      "DADOS"
-    ],
-    "automation": [
-      "Totais da semana",
-      "Variação vs anterior",
-      "Destaque automático",
-      "Texto pronto para copiar"
-    ]
+    "tabs": "DASHBOARD · DADOS",
+    "auto": "Comparativo semanal e texto pronto"
   }
 ]
