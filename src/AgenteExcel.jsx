@@ -18,7 +18,16 @@ const C = {
   cream: "#F5EFE4",
   muted: "#A89C88",
 };
-const CHART_COLORS = ["#7BE495", "#FF7A1A", "#21A366", "#FFB25E", "#4ADE80", "#E85D04", "#A7F3D0", "#FDBA74"];
+const CHART_COLORS = ["#7BE495", "#FF7A1A", "#21A366", "#FFB25E", "#4ADE80", "#E85D04", "#A7F3D0", "#FDBA74"  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
+];
 
 
 // ---------- 7 planilhas automatizadas (Trust Excel Services) ----------
@@ -86,6 +95,15 @@ const PLANILHA_SERVICES = [
     tabs: "DASHBOARD · DADOS_MENSAIS",
     auto: "MRR bridge (cascata), sparklines, CAC/LTV e narrativa",
   },
+  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
 ];
 
 // ---------- os 8 modos ----------
@@ -98,12 +116,30 @@ const MODES = [
   { id: 6, nome: "Resumo Executivo", tag: "PROMPT 6", desc: "5 linhas, 3 achados, 2 riscos, 3 próximos passos.", icon: "▤", dados: true },
   { id: 7, nome: "Dashboard", tag: "PROMPT 7", desc: "KPIs, gráficos e layout antes do Power BI.", icon: "▦", dados: true },
   { id: 8, nome: "Automação", tag: "PROMPT 8", desc: "VBA, Power Query ou passo a passo pronto.", icon: "⟳", objetivo: true, dadosOpc: true, placeholder: "Ex.: todo mês eu junto 12 planilhas de filiais em uma só e removo duplicados" },
+  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
 ];
 
 const DUVIDA_FLOWS = [
   { id: "sugerir", nome: "Sugerir o modo", desc: "Lê a dúvida e indica o melhor dos 8 prompts." },
   { id: "auto", nome: "Escolher e rodar", desc: "Escolhe o modo sozinho e já executa." },
   { id: "livre", nome: "Dúvida livre", desc: "Responde direto, sem obrigar um dos 8." },
+  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
 ];
 
 const JSON_BASE = `Responda APENAS com um objeto JSON válido, sem markdown, sem crases, sem texto antes ou depois. Use exatamente esta estrutura (omita campos que não se aplicam, mas SEMPRE inclua "titulo" e "resumo"):
@@ -186,7 +222,16 @@ Responda APENAS:
     },
   ], 300);
   const parsed = parseJsonLoose(text);
-  const mode = MODES.find((m) => m.id === Number(parsed.mode_id)) || MODES[0];
+  const mode = MODES.find((m) => m.id === Number(parsed.mode_id)) || MODES[0  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
+];
   return { mode, motivo: parsed.motivo || `Melhor encaixe: ${mode.nome}` };
 }
 
@@ -238,7 +283,16 @@ async function fileToCSV(file) {
   const buf = await file.arrayBuffer();
   if (/\.(xlsx|xls|xlsm)$/i.test(file.name)) {
     const wb = XLSX.read(buf, { type: "array" });
-    const sheet = wb.Sheets[wb.SheetNames[0]];
+    const sheet = wb.Sheets[wb.SheetNames[0]  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
+];
     return XLSX.utils.sheet_to_csv(sheet);
   }
   return new TextDecoder("utf-8").decode(buf);
@@ -456,7 +510,16 @@ function FileDrop({ label, csv, onFile, onClear }) {
       <input
         ref={ref} type="file" accept=".xlsx,.xls,.xlsm,.csv,.txt" className="hidden"
         onChange={async (e) => {
-          const f = e.target.files?.[0];
+          const f = e.target.files?.[0  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
+];
           if (f) onFile(limitCSV(await fileToCSV(f)));
           e.target.value = "";
         }}
@@ -507,7 +570,16 @@ export default function AgenteExcel() {
   function handleGeneratePlanilha() {
     try {
       setGenMsg("");
-      const svc = PLANILHA_SERVICES.find((s) => s.id === genService) || PLANILHA_SERVICES[0];
+      const svc = PLANILHA_SERVICES.find((s) => s.id === genService) || PLANILHA_SERVICES[0  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
+];
       const a = document.createElement("a");
       a.href = svc.file;
       a.download = "";
@@ -639,7 +711,7 @@ export default function AgenteExcel() {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
             <div>
               <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: C.muted }}>0 · Ferramentas premium</div>
-              <h2 className="text-lg font-semibold" style={{ color: C.cream }}>7 ferramentas premium da Trust Excel</h2>
+              <h2 className="text-lg font-semibold" style={{ color: C.cream }}>8 ferramentas premium da Trust Excel</h2>
               <p className="text-sm mt-1" style={{ color: C.muted }}>
                 Não são planilhas comuns: cada uma tem cockpit executivo, gráficos nativos, listas com autocomplete e motores de cálculo (score, runway, DSO, ponto de equilíbrio, LTV/CAC).
               </p>
@@ -707,8 +779,26 @@ export default function AgenteExcel() {
             </div>
 
             {(() => {
-              const svc = PLANILHA_SERVICES.find((s) => s.id === genService) || PLANILHA_SERVICES[0];
-              const fields = svc.fields || [];
+              const svc = PLANILHA_SERVICES.find((s) => s.id === genService) || PLANILHA_SERVICES[0  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
+];
+              const fields = svc.fields || [  {
+    id: "cohort",
+    nome: "Trust Cohort (Retenção)",
+    tag: "FERRAMENTA 8",
+    desc: "Análise de safras com heatmap de retenção, cascata média de evasão e saúde do LTV.",
+    file: "/planilhas/08_analise_cohort_retencao.xlsx",
+    tabs: "DASHBOARD · SAFRAS",
+    auto: "Heatmap, cascata de evasão, LTV e recorde de safras",
+  },
+];
               return (
                 <div className="space-y-3">
                   {fields.length > 0 ? (

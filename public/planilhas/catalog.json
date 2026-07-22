@@ -47,5 +47,12 @@
     "file": "/planilhas/07_bi_executivo_negocio.xlsx",
     "tabs": "DASHBOARD · DADOS_MENSAIS",
     "auto": "MRR, churn, CAC, LTV e leitura executiva"
+  },
+  {
+    "id": "cohort",
+    "nome": "Trust Cohort (Retenção)",
+    "file": "/planilhas/08_analise_cohort_retencao.xlsx",
+    "tabs": "DASHBOARD · SAFRAS",
+    "auto": "Heatmap, cascata de evasão, LTV e recorde de safras"
   }
 ]
