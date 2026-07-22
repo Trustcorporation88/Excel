@@ -1,51 +1,51 @@
 [
   {
     "id": "financeiro-pessoal",
-    "name": "Controle Financeiro Pessoal",
-    "file": "01_controle_financeiro_pessoal.xlsx",
-    "tabs": "DASHBOARD/PAINEL · LANCAMENTOS · CATEGORIAS",
-    "auto": "KPIs, ranking, barras e gráfico de rosca"
+    "nome": "Diagnóstico Financeiro 360",
+    "file": "/planilhas/01_diagnostico_financeiro_360.xlsx",
+    "tabs": "DASHBOARD · CONFIG · LANCAMENTOS · PROJECAO",
+    "auto": "Score de saúde, projeção de patrimônio, radar e alertas"
   },
   {
     "id": "fluxo-caixa",
-    "name": "Fluxo de Caixa Simples",
-    "file": "02_fluxo_de_caixa_simples.xlsx",
+    "nome": "Simulador de Fluxo de Caixa 90d",
+    "file": "/planilhas/02_simulador_fluxo_caixa_90d.xlsx",
     "tabs": "DASHBOARD · MOVIMENTOS",
-    "auto": "Saldo, projeção 30 dias, alerta e curva"
+    "auto": "Cenários, runway em dias e ponto de ruptura"
   },
   {
     "id": "metas-habitos",
-    "name": "Metas e Hábitos do Ano",
-    "file": "03_metas_e_habitos.xlsx",
-    "tabs": "DASHBOARD · METAS · HABITOS",
-    "auto": "% progresso, barras e consistência"
+    "nome": "Painel OKR & Hábitos",
+    "file": "/planilhas/03_painel_okr_habitos.xlsx",
+    "tabs": "DASHBOARD · OKRS · HABITOS",
+    "auto": "Previsão de atingimento e consistência em radar"
   },
   {
     "id": "cobrancas",
-    "name": "Controle de Cobranças",
-    "file": "04_controle_de_cobrancas.xlsx",
-    "tabs": "DASHBOARD · COBRANCAS",
-    "auto": "Semáforo, atraso e prioridade"
+    "nome": "Régua de Cobrança Inteligente",
+    "file": "/planilhas/04_regua_cobranca_inteligente.xlsx",
+    "tabs": "DASHBOARD · CONTAS",
+    "auto": "DSO, aging e recuperação esperada por risco"
   },
   {
     "id": "precificacao",
-    "name": "Precificação",
-    "file": "05_precificacao.xlsx",
-    "tabs": "DASHBOARD · MEU_TEMPO",
-    "auto": "Valor/hora e cenários min/ideal/premium"
+    "nome": "Motor de Precificação",
+    "file": "/planilhas/05_motor_precificacao.xlsx",
+    "tabs": "DASHBOARD · ENTRADAS · PONTO_EQUILIBRIO",
+    "auto": "Ponto de equilíbrio, margem e 3 cenários"
   },
   {
     "id": "tarefas-kanban",
-    "name": "Gestão de Tarefas (Kanban)",
-    "file": "06_gestao_de_tarefas_kanban.xlsx",
-    "tabs": "DASHBOARD · TAREFAS",
-    "auto": "WIP, atrasos e distribuição visual"
+    "nome": "Cockpit de Produtividade",
+    "file": "/planilhas/06_cockpit_produtividade.xlsx",
+    "tabs": "DASHBOARD · TAREFAS · BURNDOWN",
+    "auto": "Throughput, cycle time, WIP e burndown"
   },
   {
     "id": "relatorio-automatico",
-    "name": "Relatório que se Monta Sozinho",
-    "file": "07_relatorio_que_se_monta_sozinho.xlsx",
-    "tabs": "DASHBOARD · DADOS",
-    "auto": "Comparativo semanal e texto pronto"
+    "nome": "BI Executivo do Negócio",
+    "file": "/planilhas/07_bi_executivo_negocio.xlsx",
+    "tabs": "DASHBOARD · DADOS_MENSAIS",
+    "auto": "MRR, churn, CAC, LTV e leitura executiva"
   }
 ]

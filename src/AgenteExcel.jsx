@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import * as XLSX from "xlsx";
-import { generatePlanilha } from "./planilhaGenerator.js";
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
@@ -26,83 +25,66 @@ const CHART_COLORS = ["#7BE495", "#FF7A1A", "#21A366", "#FFB25E", "#4ADE80", "#E
 const PLANILHA_SERVICES = [
   {
     id: "financeiro-pessoal",
-    nome: "Controle Financeiro Pessoal",
-    tag: "PLANILHA 1",
-    desc: "Entradas, saídas e saldo do mês com dashboard, ranking e barras.",
-    file: "/planilhas/01_controle_financeiro_pessoal.xlsx",
-    tabs: "DASHBOARD · LANCAMENTOS · CATEGORIAS",
-    auto: "KPIs, ranking, barras e gráfico de rosca",
-    fields: [
-      { key: "nome", label: "Seu nome", type: "text", placeholder: "Flávio" },
-      { key: "renda", label: "Renda mensal base", type: "number", placeholder: "9200" },
-    ],
+    nome: "Diagnóstico Financeiro 360",
+    tag: "FERRAMENTA 1",
+    desc: "Score de saúde financeira (0–100), projeção de patrimônio em 12 meses, raio-X em radar e alertas de teto por categoria.",
+    file: "/planilhas/01_diagnostico_financeiro_360.xlsx",
+    tabs: "DASHBOARD · LANCAMENTOS · PROJECAO",
+    auto: "Score, projeção composta, radar, doughnut e alertas",
   },
   {
     id: "fluxo-caixa",
-    nome: "Fluxo de Caixa Simples",
-    tag: "PLANILHA 2",
-    desc: "Saldo hoje + projeção 30 dias com curva e alerta.",
-    file: "/planilhas/02_fluxo_de_caixa_simples.xlsx",
+    nome: "Simulador de Fluxo de Caixa · 90 dias",
+    tag: "FERRAMENTA 2",
+    desc: "Alterna cenários pessimista/realista/otimista, calcula runway em dias e antecipa o ponto de ruptura do caixa.",
+    file: "/planilhas/02_simulador_fluxo_caixa_90d.xlsx",
     tabs: "DASHBOARD · MOVIMENTOS",
-    auto: "Saldo, projeção 30 dias, alerta e curva",
-    fields: [
-      { key: "saldoInicial", label: "Saldo inicial (R$)", type: "number", placeholder: "15000" },
-    ],
+    auto: "Cenários dinâmicos, runway, curva e alerta de ruptura",
   },
   {
     id: "metas-habitos",
-    nome: "Metas e Hábitos do Ano",
-    tag: "PLANILHA 3",
-    desc: "Progresso de metas e consistência semanal de hábitos.",
-    file: "/planilhas/03_metas_e_habitos.xlsx",
-    tabs: "DASHBOARD · METAS · HABITOS",
-    auto: "% progresso, barras e consistência",
-    fields: [],
+    nome: "Painel OKR & Hábitos",
+    tag: "FERRAMENTA 3",
+    desc: "Previsão de atingimento de cada objetivo pelo ritmo atual, burn-up de OKRs e consistência de hábitos em radar.",
+    file: "/planilhas/03_painel_okr_habitos.xlsx",
+    tabs: "DASHBOARD · OKRS · HABITOS",
+    auto: "Previsão por ritmo, semáforo e radar de consistência",
   },
   {
     id: "cobrancas",
-    nome: "Controle de Cobranças",
-    tag: "PLANILHA 4",
-    desc: "Semáforo de atraso, dias vencidos e fila prioritária.",
-    file: "/planilhas/04_controle_de_cobrancas.xlsx",
-    tabs: "DASHBOARD · COBRANCAS",
-    auto: "Semáforo, atraso e prioridade",
-    fields: [],
+    nome: "Régua de Cobrança Inteligente",
+    tag: "FERRAMENTA 4",
+    desc: "Calcula DSO, distribui a carteira em faixas de aging, estima a recuperação ponderada por risco e sugere a ação de cobrança.",
+    file: "/planilhas/04_regua_cobranca_inteligente.xlsx",
+    tabs: "DASHBOARD · CONTAS",
+    auto: "DSO, aging, recuperação esperada e ação sugerida",
   },
   {
     id: "precificacao",
-    nome: "Precificação",
-    tag: "PLANILHA 5",
-    desc: "Valor da hora e cenários mínimo, ideal e premium.",
-    file: "/planilhas/05_precificacao.xlsx",
-    tabs: "DASHBOARD · MEU_TEMPO",
-    auto: "Valor/hora e cenários min/ideal/premium",
-    fields: [
-      { key: "servico", label: "Nome do serviço", type: "text", placeholder: "Consultoria" },
-      { key: "renda", label: "Renda desejada/mês", type: "number", placeholder: "20000" },
-      { key: "horasProjeto", label: "Horas do projeto", type: "number", placeholder: "24" },
-      { key: "precoAlvo", label: "Preço-alvo do cliente", type: "number", placeholder: "8500" },
-    ],
+    nome: "Motor de Precificação",
+    tag: "FERRAMENTA 5",
+    desc: "Valor da hora, ponto de equilíbrio com gráfico receita×custo, margem de contribuição e 3 cenários de proposta.",
+    file: "/planilhas/05_motor_precificacao.xlsx",
+    tabs: "DASHBOARD · ENTRADAS · PONTO_EQUILIBRIO",
+    auto: "Break-even, margem de contribuição e cenários",
   },
   {
     id: "tarefas-kanban",
-    nome: "Gestão de Tarefas (Kanban)",
-    tag: "PLANILHA 6",
-    desc: "A fazer, fazendo e feito com WIP e atraso.",
-    file: "/planilhas/06_gestao_de_tarefas_kanban.xlsx",
-    tabs: "DASHBOARD · TAREFAS",
-    auto: "WIP, atrasos e distribuição visual",
-    fields: [],
+    nome: "Cockpit de Produtividade",
+    tag: "FERRAMENTA 6",
+    desc: "Throughput, cycle time médio, controle de WIP, burndown da semana e alertas de tarefas envelhecidas.",
+    file: "/planilhas/06_cockpit_produtividade.xlsx",
+    tabs: "DASHBOARD · TAREFAS · BURNDOWN",
+    auto: "Throughput, cycle time, WIP e burndown",
   },
   {
     id: "relatorio-automatico",
-    nome: "Relatório que se Monta Sozinho",
-    tag: "PLANILHA 7",
-    desc: "Resumo semanal com texto pronto para copiar.",
-    file: "/planilhas/07_relatorio_que_se_monta_sozinho.xlsx",
-    tabs: "DASHBOARD · DADOS",
-    auto: "Comparativo semanal e texto pronto",
-    fields: [],
+    nome: "BI Executivo do Negócio",
+    tag: "FERRAMENTA 7",
+    desc: "MRR, crescimento mês a mês, churn, CAC, LTV e LTV/CAC com leitura executiva escrita automaticamente.",
+    file: "/planilhas/07_bi_executivo_negocio.xlsx",
+    tabs: "DASHBOARD · DADOS_MENSAIS",
+    auto: "MRR, churn, CAC, LTV/CAC e narrativa automática",
   },
 ];
 
@@ -526,16 +508,15 @@ export default function AgenteExcel() {
     try {
       setGenMsg("");
       const svc = PLANILHA_SERVICES.find((s) => s.id === genService) || PLANILHA_SERVICES[0];
-      const opts = {};
-      (svc.fields || []).forEach((f) => {
-        const raw = genForm[f.key];
-        if (raw === undefined || raw === "") return;
-        opts[f.key] = f.type === "number" ? Number(raw) : raw;
-      });
-      generatePlanilha(svc.id, opts);
-      setGenMsg(`Planilha gerada: ${svc.nome}`);
+      const a = document.createElement("a");
+      a.href = svc.file;
+      a.download = "";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setGenMsg(`Baixando: ${svc.nome}`);
     } catch (e) {
-      setGenMsg(e?.message || "Falha ao gerar planilha");
+      setGenMsg(e?.message || "Falha ao baixar a ferramenta");
     }
   }
 
@@ -657,10 +638,10 @@ export default function AgenteExcel() {
         <section className="rounded-2xl p-4 md:p-5 border" style={{ background: C.surface, borderColor: C.line }}>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
             <div>
-              <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: C.muted }}>0 · Serviços automatizados</div>
-              <h2 className="text-lg font-semibold" style={{ color: C.cream }}>7 planilhas prontas da Trust Excel</h2>
+              <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: C.muted }}>0 · Ferramentas premium</div>
+              <h2 className="text-lg font-semibold" style={{ color: C.cream }}>7 ferramentas premium da Trust Excel</h2>
               <p className="text-sm mt-1" style={{ color: C.muted }}>
-                Dashboards visuais + gerador sob demanda. Baixe o modelo pronto ou personalize e gere na hora.
+                Não são planilhas comuns: cada uma tem cockpit executivo, gráficos nativos, listas com autocomplete e motores de cálculo (score, runway, DSO, ponto de equilíbrio, LTV/CAC).
               </p>
             </div>
             <a
@@ -691,7 +672,7 @@ export default function AgenteExcel() {
                     className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold"
                     style={{ background: C.orange, color: C.bg }}
                   >
-                    Baixar modelo
+                    Baixar ferramenta
                   </a>
                   <button
                     type="button"
@@ -699,7 +680,7 @@ export default function AgenteExcel() {
                     className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold border"
                     style={{ borderColor: C.line, color: C.cream, background: C.surface }}
                   >
-                    Personalizar
+                    Ver detalhes
                   </button>
                 </div>
               </article>
@@ -710,8 +691,8 @@ export default function AgenteExcel() {
           <div className="rounded-xl p-4 border" style={{ background: C.surface2, borderColor: C.line }}>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
               <div>
-                <div className="text-[11px] tracking-[0.16em] uppercase" style={{ color: C.orange }}>Gerador automático</div>
-                <h3 className="text-sm font-semibold" style={{ color: C.cream }}>Monte e baixe a planilha sob demanda</h3>
+                <div className="text-[11px] tracking-[0.16em] uppercase" style={{ color: C.orange }}>Seleção rápida</div>
+                <h3 className="text-sm font-semibold" style={{ color: C.cream }}>Escolha a ferramenta e baixe o modelo premium</h3>
               </div>
               <select
                 value={genService}
@@ -748,7 +729,7 @@ export default function AgenteExcel() {
                     </div>
                   ) : (
                     <p className="text-xs" style={{ color: C.muted }}>
-                      Esta planilha já vem com dados de exemplo prontos. Clique em gerar para baixar personalizada no navegador.
+                      {svc.desc} Já vem com dashboard, gráficos nativos, listas com autocomplete e dados de exemplo — abra e comece a preencher; tudo recalcula sozinho.
                     </p>
                   )}
                   <div className="flex flex-wrap items-center gap-2">
@@ -758,7 +739,7 @@ export default function AgenteExcel() {
                       className="rounded-lg px-4 py-2 text-xs font-semibold"
                       style={{ background: C.green, color: "#04140C" }}
                     >
-                      Gerar e baixar agora
+                      Baixar ferramenta premium
                     </button>
                     <a
                       href={svc.file}
@@ -766,7 +747,7 @@ export default function AgenteExcel() {
                       className="rounded-lg px-4 py-2 text-xs font-semibold border"
                       style={{ borderColor: C.line, color: C.cream }}
                     >
-                      Só o modelo visual (v2)
+                      Baixar modelo premium
                     </a>
                     {genMsg && (
                       <span className="text-xs" style={{ color: C.greenBright }}>{genMsg}</span>
