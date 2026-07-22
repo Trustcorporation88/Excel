@@ -70,86 +70,100 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+// Shared core logic: messages -> OpenAI -> DeepSeek fallback.
+// Returns { status, body } instead of writing to a response, so it can be
+// reused by both /api/ai/chat and /api/deepseek/chat/completions without
+// making an internal HTTP call back into this same server.
+async function runAiChat({ messages, max_tokens, temperature }) {
+  if (!Array.isArray(messages) || messages.length === 0) {
+    return { status: 400, body: { error: "messages[] é obrigatório" } };
+  }
+
+  if (!OPENAI_API_KEY && !DEEPSEEK_API_KEY) {
+    return {
+      status: 401,
+      body: {
+        error:
+          "Nenhuma chave configurada. Defina OPENAI_API_KEY e/ou DEEPSEEK_API_KEY no Railway.",
+      },
+    };
+  }
+
+  const attempts = [];
+  // 1) OpenAI first
+  if (OPENAI_API_KEY) {
+    try {
+      const out = await callProvider({
+        name: "openai",
+        url: "https://api.openai.com/v1/chat/completions",
+        apiKey: OPENAI_API_KEY,
+        model: OPENAI_MODEL,
+        messages,
+        max_tokens,
+        temperature,
+      });
+      return { status: 200, body: out };
+    } catch (e) {
+      attempts.push({ provider: "openai", error: e.message, status: e.status || 500 });
+    }
+  }
+
+  // 2) DeepSeek fallback
+  if (DEEPSEEK_API_KEY) {
+    try {
+      const out = await callProvider({
+        name: "deepseek",
+        url: "https://api.deepseek.com/chat/completions",
+        apiKey: DEEPSEEK_API_KEY,
+        model: DEEPSEEK_MODEL,
+        messages,
+        max_tokens,
+        temperature,
+      });
+      return {
+        status: 200,
+        body: { ...out, fallback_from: attempts[0]?.provider || null, attempts },
+      };
+    } catch (e) {
+      attempts.push({ provider: "deepseek", error: e.message, status: e.status || 500 });
+    }
+  }
+
+  return {
+    status: 502,
+    body: { error: "Falha em todos os provedores de IA", attempts },
+  };
+}
+
 app.post("/api/ai/chat", async (req, res) => {
   try {
     const messages = req.body?.messages;
     const max_tokens = Number(req.body?.max_tokens || 4000);
     const temperature = Number(req.body?.temperature ?? 0.3);
 
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return res.status(400).json({ error: "messages[] é obrigatório" });
-    }
-
-    if (!OPENAI_API_KEY && !DEEPSEEK_API_KEY) {
-      return res.status(401).json({
-        error:
-          "Nenhuma chave configurada. Defina OPENAI_API_KEY e/ou DEEPSEEK_API_KEY no Railway.",
-      });
-    }
-
-    const attempts = [];
-    // 1) OpenAI first
-    if (OPENAI_API_KEY) {
-      try {
-        const out = await callProvider({
-          name: "openai",
-          url: "https://api.openai.com/v1/chat/completions",
-          apiKey: OPENAI_API_KEY,
-          model: OPENAI_MODEL,
-          messages,
-          max_tokens,
-          temperature,
-        });
-        return res.json(out);
-      } catch (e) {
-        attempts.push({ provider: "openai", error: e.message, status: e.status || 500 });
-      }
-    }
-
-    // 2) DeepSeek fallback
-    if (DEEPSEEK_API_KEY) {
-      try {
-        const out = await callProvider({
-          name: "deepseek",
-          url: "https://api.deepseek.com/chat/completions",
-          apiKey: DEEPSEEK_API_KEY,
-          model: DEEPSEEK_MODEL,
-          messages,
-          max_tokens,
-          temperature,
-        });
-        return res.json({ ...out, fallback_from: attempts[0]?.provider || null, attempts });
-      } catch (e) {
-        attempts.push({ provider: "deepseek", error: e.message, status: e.status || 500 });
-      }
-    }
-
-    return res.status(502).json({
-      error: "Falha em todos os provedores de IA",
-      attempts,
-    });
+    const result = await runAiChat({ messages, max_tokens, temperature });
+    return res.status(result.status).json(result.body);
   } catch (e) {
     return res.status(500).json({ error: e.message || "Erro interno" });
   }
 });
 
-// Compat: old DeepSeek-only path still works, but also tries OpenAI first via /api/ai/chat shape
+// Compat: old DeepSeek-only path still works, but also tries OpenAI first.
+// Calls the shared logic directly instead of making an internal HTTP fetch
+// back into this same server, which could deadlock while it is starting up.
 app.post("/api/deepseek/chat/completions", async (req, res) => {
   try {
     const messages = req.body?.messages || [];
     const max_tokens = Number(req.body?.max_tokens || 4000);
     const temperature = Number(req.body?.temperature ?? 0.3);
 
-    // Prefer shared router (OpenAI -> DeepSeek)
-    const r = await fetch(`http://127.0.0.1:${PORT}/api/ai/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages, max_tokens, temperature }),
-    });
-    const data = await r.json();
-    if (!r.ok) return res.status(r.status).json(data);
+    const result = await runAiChat({ messages, max_tokens, temperature });
+    if (result.status !== 200) {
+      return res.status(result.status).json(result.body);
+    }
 
     // Translate to OpenAI-compatible response for old frontend
+    const data = result.body;
     return res.json({
       choices: [{ message: { role: "assistant", content: data.content || "" } }],
       provider: data.provider,
