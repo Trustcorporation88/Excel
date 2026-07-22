@@ -163,7 +163,7 @@ app.post("/api/deepseek/chat/completions", async (req, res) => {
 // Static frontend
 const distDir = path.join(__dirname, "dist");
 app.use(express.static(distDir));
-app.get("*", (req, res) => {
+app.get("/:path(*)", (req, res) => {
   // don't swallow API 404s
   if (req.path.startsWith("/api/")) return res.status(404).json({ error: "not found" });
   res.sendFile(path.join(distDir, "index.html"));
