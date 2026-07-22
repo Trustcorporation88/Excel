@@ -1,16 +1,29 @@
-# React + Vite
+# Trust Excel · Agente + 7 Planilhas Automatizadas
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+App em https://excel.trustcorp.com.br
 
-Currently, two official plugins are available:
+## O que tem
+1. **Agente Excel** com 8 modos (insights, fórmulas, limpeza, comparação, etc.)
+2. **7 planilhas prontas** com fórmulas, painéis e automações
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Downloads
+Arquivos em `/public/planilhas/`:
 
-## React Compiler
+1. `01_controle_financeiro_pessoal.xlsx`
+2. `02_fluxo_de_caixa_simples.xlsx`
+3. `03_metas_e_habitos.xlsx`
+4. `04_controle_de_cobrancas.xlsx`
+5. `05_precificacao.xlsx`
+6. `06_gestao_de_tarefas_kanban.xlsx`
+7. `07_relatorio_que_se_monta_sozinho.xlsx`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Dev
+```bash
+npm install
+npm run dev
+```
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Build
+```bash
+npm run build
+```

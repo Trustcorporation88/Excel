@@ -20,6 +20,74 @@ const C = {
 };
 const CHART_COLORS = ["#7BE495", "#FF7A1A", "#21A366", "#FFB25E", "#4ADE80", "#E85D04", "#A7F3D0", "#FDBA74"];
 
+
+// ---------- 7 planilhas automatizadas (Trust Excel Services) ----------
+const PLANILHA_SERVICES = [
+  {
+    id: "financeiro-pessoal",
+    nome: "Controle Financeiro Pessoal",
+    tag: "PLANILHA 1",
+    desc: "Entradas, saídas e saldo do mês com painel e gráfico por categoria.",
+    file: "/planilhas/01_controle_financeiro_pessoal.xlsx",
+    tabs: "PAINEL · LANCAMENTOS · CATEGORIAS",
+    auto: "Listas suspensas, totais do mês, gasto por categoria",
+  },
+  {
+    id: "fluxo-caixa",
+    nome: "Fluxo de Caixa Simples",
+    tag: "PLANILHA 2",
+    desc: "Saldo hoje + projeção de 30 dias com realizados e previstos.",
+    file: "/planilhas/02_fluxo_de_caixa_simples.xlsx",
+    tabs: "RESUMO · MOVIMENTOS",
+    auto: "Saldo acumulado, projeção 30 dias, alerta de caixa",
+  },
+  {
+    id: "metas-habitos",
+    nome: "Metas e Hábitos do Ano",
+    tag: "PLANILHA 3",
+    desc: "Progresso de metas e consistência semanal de hábitos.",
+    file: "/planilhas/03_metas_e_habitos.xlsx",
+    tabs: "PAINEL · METAS · HABITOS",
+    auto: "% progresso, barra visual, heatmap de hábitos",
+  },
+  {
+    id: "cobrancas",
+    nome: "Controle de Cobranças",
+    tag: "PLANILHA 4",
+    desc: "Semáforo de atraso, dias vencidos e fila de cobrança.",
+    file: "/planilhas/04_controle_de_cobrancas.xlsx",
+    tabs: "RESUMO · COBRANCAS",
+    auto: "Status automático, dias de atraso, ação sugerida",
+  },
+  {
+    id: "precificacao",
+    nome: "Precificação",
+    tag: "PLANILHA 5",
+    desc: "Valor da hora e cenários mínimo, ideal e premium.",
+    file: "/planilhas/05_precificacao.xlsx",
+    tabs: "PRECO · MEU_TEMPO",
+    auto: "Custo da entrega, margens e horas para preço-alvo",
+  },
+  {
+    id: "tarefas-kanban",
+    nome: "Gestão de Tarefas (Kanban)",
+    tag: "PLANILHA 6",
+    desc: "A fazer, fazendo e feito com alerta de atraso.",
+    file: "/planilhas/06_gestao_de_tarefas_kanban.xlsx",
+    tabs: "RESUMO · TAREFAS",
+    auto: "Alertas, contadores kanban e limite WIP",
+  },
+  {
+    id: "relatorio-automatico",
+    nome: "Relatório que se Monta Sozinho",
+    tag: "PLANILHA 7",
+    desc: "Resumo semanal automático com texto pronto para copiar.",
+    file: "/planilhas/07_relatorio_que_se_monta_sozinho.xlsx",
+    tabs: "RESUMO · DADOS",
+    auto: "Totais da semana, variação e destaque automático",
+  },
+];
+
 // ---------- os 8 modos ----------
 const MODES = [
   { id: 1, nome: "5 Insights", tag: "PROMPT 1", desc: "Padrões, anomalias e oportunidades em segundos.", icon: "⚡", dados: true },
@@ -544,7 +612,53 @@ export default function AgenteExcel() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 pb-16 space-y-6">
-        {/* modos */}
+        
+        {/* 0 · 7 planilhas prontas e automatizadas */}
+        <section className="rounded-2xl p-4 md:p-5 border" style={{ background: C.surface, borderColor: C.line }}>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
+            <div>
+              <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: C.muted }}>0 · Serviços automatizados</div>
+              <h2 className="text-lg font-semibold" style={{ color: C.cream }}>7 planilhas prontas da Trust Excel</h2>
+              <p className="text-sm mt-1" style={{ color: C.muted }}>
+                Baixe, preencha e deixe as fórmulas trabalharem. Cada arquivo já vem com painel, validações e automações.
+              </p>
+            </div>
+            <a
+              href="https://trustcorp.com.br"
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs underline underline-offset-4"
+              style={{ color: C.orange }}
+            >
+              Ver no hub TrustCorp
+            </a>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {PLANILHA_SERVICES.map((s) => (
+              <article key={s.id} className="rounded-xl p-3 border flex flex-col gap-2" style={{ background: C.surface2, borderColor: C.line }}>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[10px] tracking-[0.16em] uppercase" style={{ color: C.orange }}>{s.tag}</span>
+                  <span className="text-[10px]" style={{ color: C.muted }}>{s.tabs}</span>
+                </div>
+                <h3 className="text-sm font-semibold" style={{ color: C.cream }}>{s.nome}</h3>
+                <p className="text-xs leading-relaxed" style={{ color: C.muted }}>{s.desc}</p>
+                <p className="text-[11px]" style={{ color: C.greenBright }}>Automação: {s.auto}</p>
+                <div className="mt-auto pt-1">
+                  <a
+                    href={s.file}
+                    download
+                    className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-xs font-semibold"
+                    style={{ background: C.orange, color: C.bg }}
+                  >
+                    Baixar planilha
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+{/* modos */}
         <section>
           <div className="text-xs uppercase tracking-widest font-bold mb-3" style={{ color: C.muted }}>1 · Os 8 modos</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
