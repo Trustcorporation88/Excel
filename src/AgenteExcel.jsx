@@ -65,7 +65,7 @@ const PLANILHA_SERVICES = [
     tag: "FERRAMENTA 5",
     desc: "Valor da hora, ponto de equilíbrio com gráfico receita×custo, margem de contribuição e 3 cenários de proposta.",
     file: "/planilhas/05_motor_precificacao.xlsx",
-    tabs: "DASHBOARD · ENTRADAS · PONTO_EQUILIBRIO",
+    tabs: "DASHBOARD · ENTRADAS",
     auto: "Break-even, cascata custo→preço e spark de margem",
   },
   {

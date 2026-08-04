@@ -31,7 +31,7 @@
     "id": "precificacao",
     "nome": "Motor de Precificação",
     "file": "/planilhas/05_motor_precificacao.xlsx",
-    "tabs": "DASHBOARD · ENTRADAS · PONTO_EQUILIBRIO",
+    "tabs": "DASHBOARD · ENTRADAS",
     "auto": "Ponto de equilíbrio, margem e 3 cenários"
   },
   {

@@ -1,6 +1,8 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +16,20 @@ const OPENAI_MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
 const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || "deepseek-chat";
 
 app.use(express.json({ limit: "2mb" }));
+
+// Segurança básica de headers HTTP
+app.use(helmet());
+
+// Limita chamadas à IA (protege contra abuso e custo das chaves)
+const aiLimiter = rateLimit({
+  windowMs: 60 * 1000,          // 1 minuto
+  max: 20,                      // até 20 requisições por IP por minuto
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Muitas requisições. Aguarde um instante e tente novamente." },
+});
+app.use("/api/ai/chat", aiLimiter);
+app.use("/api/deepseek/chat/completions", aiLimiter);
 
 async function callProvider({ name, url, apiKey, model, messages, max_tokens, temperature }) {
   if (!apiKey) {
