@@ -257,7 +257,7 @@ async function fileToCSV(file) {
   }
   return new TextDecoder("utf-8").decode(buf);
 }
-function limitCSV(csv, maxRows = 180, maxChars = 24000) {
+function limitCSV(csv, maxRows = 500, maxChars = 50000) {
   if (!csv) return "";
   const lines = csv.trim().split(/\r?\n/).slice(0, maxRows);
   let out = lines.join("\n");
@@ -447,7 +447,7 @@ function FileDrop({ label, csv, onFile, onClear }) {
       ) : (
         <div className="rounded-xl p-3" style={{ background: C.surface2, border: `1px solid ${C.green}66` }}>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-bold" style={{ color: C.greenBright }}>✓ Dados carregados ({csv.trim().split(/\r?\n/).length} linhas)</span>
+            <span className="text-xs font-bold" style={{ color: C.greenBright }}>✓ Dados carregados ({csv.trim().split(/\r?\n/).length} linhas · máx. 500 processadas)</span>
             <button onClick={onClear} className="text-xs px-2 py-1 rounded" style={{ color: C.orange }}>Trocar</button>
           </div>
           {rows && (
@@ -511,10 +511,10 @@ export default function AgenteExcel() {
 
   function mapErro(e) {
     const msg = e?.message || "";
-    if (msg.includes("API key") || msg.includes("Unauthorized") || msg.includes("401")) {
-      return "Nenhuma chave de IA válida. Configure OPENAI_API_KEY (principal) e/ou DEEPSEEK_API_KEY (fallback) no Railway e faça redeploy.";
+    if (msg.includes("API key") || msg.includes("Unauthorized") || msg.includes("401") || msg.includes("401")) {
+      return "O serviço de IA está temporariamente indisponível. Tente novamente em instantes. Se o problema persistir, entre em contato com o suporte.";
     }
-    return msg || "O agente não conseguiu processar. Tente com menos linhas ou verifique se os dados têm cabeçalho na primeira linha.";
+    return msg || "O agente não conseguiu processar os dados. Verifique se a planilha tem cabeçalho na primeira linha e tente novamente. Dica: se o arquivo for muito grande, envie a aba mais relevante.";
   }
 
 
@@ -646,13 +646,64 @@ export default function AgenteExcel() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 pb-16 space-y-6">
-        
+
+        {/* ★ SERVIÇO PRINCIPAL · Finance AI (CFO de Bolso) */}
+        <section
+          className="rounded-2xl p-5 md:p-6 border relative overflow-hidden"
+          style={{ background: `linear-gradient(135deg, ${C.green}1f, ${C.surface})`, borderColor: C.greenBright }}
+        >
+          <div
+            className="absolute top-0 right-0 w-40 h-40 rounded-full pointer-events-none"
+            style={{ background: `radial-gradient(circle, ${C.green}33, transparent 70%)` }}
+          />
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-[10px] tracking-[0.2em] uppercase px-2 py-1 rounded-full font-bold" style={{ background: C.green, color: "#04140C" }}>
+              ★ Serviço principal
+            </span>
+            <span className="text-[10px] tracking-[0.2em] uppercase" style={{ color: C.muted }}>Finance AI · CFO de Bolso</span>
+          </div>
+          <h2 className="text-xl sm:text-2xl font-extrabold mb-2" style={{ fontFamily: "'Sora', sans-serif", color: C.cream }}>
+            💼 Finance AI — o raio-x do seu caixa em linguagem de gente
+          </h2>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: C.muted }}>
+            Suba sua planilha ou cole os números e receba: quanto entrou e saiu, margem, pra onde foi o dinheiro,
+            alertas automáticos e análise da IA com recomendações práticas. Baixe o resultado em <b style={{ color: C.greenBright }}>Word, PDF e PowerPoint</b>.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+            {[
+              ["💰", "Entrou / Saiu / Sobrou"],
+              ["📊", "Gráficos automáticos"],
+              ["⚠️", "Alertas e divergências"],
+              ["📄", "Word · PDF · PPTX"],
+            ].map(([ic, tx]) => (
+              <div key={tx} className="rounded-xl p-3 border" style={{ background: C.surface2, borderColor: C.line }}>
+                <div className="text-xl mb-1">{ic}</div>
+                <div className="text-[11px] leading-snug" style={{ color: C.cream }}>{tx}</div>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="https://finance-production-655d.up.railway.app/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-extrabold"
+              style={{ fontFamily: "'Sora', sans-serif", background: `linear-gradient(135deg, ${C.green}, ${C.greenBright})`, color: "#04140C" }}
+            >
+              Abrir Finance AI →
+            </a>
+            <span className="inline-flex items-center text-xs" style={{ color: C.muted }}>
+              🔒 Dados tratados com segurança · análise gerencial, não substitui seu contador
+            </span>
+          </div>
+        </section>
+
         
         {/* 0 · 8 ferramentas premium e automatizadas */}
         <section className="rounded-2xl p-4 md:p-5 border" style={{ background: C.surface, borderColor: C.line }}>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2 mb-4">
             <div>
-              <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: C.muted }}>0 · Ferramentas premium</div>
+              <div className="text-[11px] tracking-[0.2em] uppercase mb-1" style={{ color: C.muted }}>1 · Ferramentas premium</div>
               <h2 className="text-lg font-semibold" style={{ color: C.cream }}>8 ferramentas premium da Trust Excel</h2>
               <p className="text-sm mt-1" style={{ color: C.muted }}>
                 Não são planilhas comuns: cada uma tem cockpit executivo, gráficos nativos, listas com autocomplete e motores de cálculo (score, runway, DSO, ponto de equilíbrio, LTV/CAC).
@@ -774,7 +825,7 @@ export default function AgenteExcel() {
         </section>
 
 <section>
-          <div className="text-xs uppercase tracking-widest font-bold mb-3" style={{ color: C.muted }}>1 · Os 8 modos</div>
+          <div className="text-xs uppercase tracking-widest font-bold mb-3" style={{ color: C.muted }}>2 · Os 8 modos de análise com IA</div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {MODES.map((m) => {
               const on = m.id === mode.id;
@@ -803,7 +854,7 @@ export default function AgenteExcel() {
 
         {/* entrada */}
         <section className="space-y-4">
-          <div className="text-xs uppercase tracking-widest font-bold" style={{ color: C.muted }}>2 · Entregue os dados</div>
+          <div className="text-xs uppercase tracking-widest font-bold" style={{ color: C.muted }}>3 · Entregue os dados</div>
 
           {mode.objetivo && !temDuvida && (
             <div>
@@ -844,7 +895,7 @@ export default function AgenteExcel() {
         {/* dúvidas */}
         <section className="space-y-3">
           <div className="text-xs uppercase tracking-widest font-bold" style={{ color: C.muted }}>
-            3 · Dúvidas
+            4 · Dúvidas
           </div>
           <div
             className="rounded-xl p-4 space-y-4"
@@ -979,8 +1030,9 @@ export default function AgenteExcel() {
         )}
 
         {!res && !loading && (
-          <div className="text-center text-xs pt-4" style={{ color: C.muted }}>
-            Sai da análise e vai pra decisão. · Os dados enviados são limitados às primeiras ~180 linhas.
+          <div className="text-center text-xs pt-4 space-y-1" style={{ color: C.muted }}>
+            <div>Sai da análise e vai pra decisão. · Os dados enviados são limitados às primeiras ~500 linhas.</div>
+            <div className="opacity-70">🔒 Privacidade: o conteúdo da sua planilha é enviado a uma IA externa (OpenAI/DeepSeek) somente para gerar a resposta. Não armazenamos seus arquivos.</div>
           </div>
         )}
       </main>
