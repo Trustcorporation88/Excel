@@ -496,6 +496,7 @@ export default function AgenteExcel() {
   const [genMsg, setGenMsg] = useState("");
   const [erro, setErro] = useState("");
   const [res, setRes] = useState(null);
+  const [mostrarFinance, setMostrarFinance] = useState(false);
 
   const dadosFinais = csv || limitCSV(paste);
   const temDuvida = duvida.trim().length > 3;
@@ -683,19 +684,50 @@ export default function AgenteExcel() {
             ))}
           </div>
           <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setMostrarFinance(v => !v)}
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-extrabold"
+              style={{ fontFamily: "'Sora', sans-serif", background: `linear-gradient(135deg, ${C.green}, ${C.greenBright})`, color: "#04140C" }}
+            >
+              {mostrarFinance ? "Ocultar Finance AI" : "Abrir Finance AI aqui ↓"}
+            </button>
             <a
               href="https://finance-production-655d.up.railway.app/"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-extrabold"
-              style={{ fontFamily: "'Sora', sans-serif", background: `linear-gradient(135deg, ${C.green}, ${C.greenBright})`, color: "#04140C" }}
+              className="inline-flex items-center rounded-xl px-4 py-3 text-xs font-bold border"
+              style={{ borderColor: C.line, color: C.cream }}
             >
-              Abrir Finance AI →
+              Abrir em tela cheia ↗
             </a>
             <span className="inline-flex items-center text-xs" style={{ color: C.muted }}>
               🔒 Dados tratados com segurança · análise gerencial, não substitui seu contador
             </span>
           </div>
+
+          {mostrarFinance && (
+            <div className="mt-4 rounded-xl overflow-hidden border" style={{ borderColor: C.greenBright, background: C.bg }}>
+              <div className="flex items-center justify-between px-3 py-2" style={{ background: C.surface2, borderBottom: `1px solid ${C.line}` }}>
+                <span className="text-xs font-bold" style={{ color: C.greenBright }}>💼 Finance AI · CFO de Bolso</span>
+                <button
+                  type="button"
+                  onClick={() => setMostrarFinance(false)}
+                  className="text-xs px-2 py-1 rounded"
+                  style={{ color: C.orange }}
+                >
+                  ✕ Fechar
+                </button>
+              </div>
+              <iframe
+                src="https://finance-production-655d.up.railway.app/"
+                title="Finance AI - CFO de Bolso"
+                style={{ width: "100%", height: "650px", border: "none", background: "#fff" }}
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
+              />
+            </div>
+          )}
         </section>
 
         
