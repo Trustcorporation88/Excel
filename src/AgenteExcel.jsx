@@ -724,7 +724,6 @@ export default function AgenteExcel() {
                 title="Finance AI - CFO de Bolso"
                 style={{ width: "100%", height: "650px", border: "none", background: "#fff" }}
                 loading="lazy"
-                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
               />
             </div>
           )}
