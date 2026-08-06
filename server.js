@@ -18,7 +18,17 @@ const DEEPSEEK_MODEL = process.env.DEEPSEEK_MODEL || "deepseek-chat";
 app.use(express.json({ limit: "2mb" }));
 
 // Segurança básica de headers HTTP
-app.use(helmet());
+// Nota: frame-src permite o iframe do Finance AI (cross-origin) dentro da página
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        "frame-src": ["'self'", "https://finance-production-655d.up.railway.app"],
+      },
+    },
+  })
+);
 
 // Limita chamadas à IA (protege contra abuso e custo das chaves)
 const aiLimiter = rateLimit({
