@@ -10,6 +10,7 @@ import os
 import io
 import re
 import json
+import sys
 import time
 import time as _time
 import hmac
@@ -28,8 +29,41 @@ import supabase_client
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024  # 20MB
-# Sessão: usa chave do ambiente (segura) ou gera uma estável em memória
-app.secret_key = os.environ.get("APP_SECRET_KEY", "cfo-bolso-dev-secret-key-troque-em-producao")
+
+
+def _get_secret_key() -> str:
+    """Valida e retorna a secret_key. Falha em produção se insegura."""
+    key = os.environ.get("APP_SECRET_KEY", "").strip()
+    env = os.environ.get("FLASK_ENV", os.environ.get("NODE_ENV", "development")).lower()
+    
+    insecure_default = "cfo-bolso-dev-secret-key-troque-em-producao"
+    
+    if env == "production":
+        if not key:
+            raise RuntimeError(
+                "ERRO CRÍTICO: APP_SECRET_KEY não definida em produção. "
+                "Gere uma com: python -c \"import secrets; print(secrets.token_hex(32))\""
+            )
+        if key == insecure_default:
+            raise RuntimeError(
+                "ERRO CRÍTICO: APP_SECRET_KEY usando o valor padrão de desenvolvimento em produção. "
+                "Defina uma chave aleatória forte."
+            )
+        if len(key) < 32:
+            raise RuntimeError(
+                "ERRO CRÍTICO: APP_SECRET_KEY muito curta. Use no mínimo 32 caracteres aleatórios."
+            )
+        return key
+    
+    # Desenvolvimento: chave aleatória por execução ou a fornecida
+    if not key:
+        import secrets
+        print("⚠️  AVISO: APP_SECRET_KEY não definida. Gerando chave temporária para esta sessão.", file=sys.stderr)
+        return secrets.token_hex(32)
+    return key
+
+
+app.secret_key = _get_secret_key()
 
 # Auth simples: ADMIN_USER + ADMIN_PASSWORD via ambiente (opcional)
 ADMIN_USER = os.environ.get("ADMIN_USER", "").strip()
